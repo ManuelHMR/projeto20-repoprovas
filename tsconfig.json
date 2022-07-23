@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "sourceMap": true,
+      "outDir": "build",
+      // "strict": true,
+      "module": "commonjs",
+      "esModuleInterop": true
+    }
+}
