@@ -23,15 +23,15 @@ describe("POST /signup", ()=> {
     });
 });
 
-// describe("POST /signin", ()=> {
-//     it("login with valid credentials", async ()=> {
-//         const response = await supertest(app).post("/signin").send(USER)
-//         const token = response.body.token;
-//         expect(token).not.toBeNull();
-//     });
-//     it("login without valid credentials", async ()=> {
-//         const response = await supertest(app).post("/signin").send({...USER, password: "0000000000"})
-//         expect(response.statusCode).toBe(400);
-//     });
-// });
+describe("POST /signin", ()=> {
+    it("login with valid credentials", async ()=> {
+        const response = await supertest(app).post("/signin").send(USER)
+        const token = response.body.token;
+        expect(token).not.toBeNull();
+    });
+    it("login without valid credentials", async ()=> {
+        const response = await supertest(app).post("/signin").send({...USER, password: "0000000000"})
+        expect(response.statusCode).toBe(400);
+    });
+});
 
