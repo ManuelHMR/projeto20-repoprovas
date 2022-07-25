@@ -2,6 +2,7 @@ import app from "../src/app";
 import supertest from "supertest";
 import { prisma } from "../src/config/database";
 import { testBody } from "../src/services/testServices";
+import { not } from "joi";
   
 afterAll(async () => {
     await prisma.$executeRaw`TRUNCATE TABLE users RESTART IDENTITY CASCADE`;
@@ -70,5 +71,20 @@ describe("POST /tests", () => {
     it("post a test without valid name", async () => {
         const response = await supertest(app).post("/tests").set('Authorization', `Bearer ${token}`).send({...TEST, name: ""});
         expect(response.status).toBe(422);
+    });
+});
+
+describe("GET /tests", () => {
+    it("get tests with valid disciplines query", async () => {
+        const response = await supertest(app).get("/tests?groupBy=disciplines").set('Authorization', `Bearer ${token}`);
+        expect(response).not.toBeNull();
+    });
+    it("get tests with valid teachers query", async () => {
+        const response = await supertest(app).get("/tests?groupBy=teachers").set('Authorization', `Bearer ${token}`);
+        expect(response).not.toBeNull();
+    });
+    it("get tests without valid query", async () => {
+        const response = await supertest(app).get("/tests?groupBy=teste").set('Authorization', `Bearer ${token}`);
+        expect(response.statusCode).toBe(404);
     });
 });
