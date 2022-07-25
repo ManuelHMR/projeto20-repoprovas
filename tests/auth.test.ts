@@ -3,7 +3,7 @@ import supertest from "supertest";
 import { prisma } from "./../src/config/database";
   
 afterAll(async () => {
-    await prisma.$executeRaw`TRUNCATE TABLE "User" RESTART IDENTITY CASCADE`;
+    await prisma.$executeRaw`TRUNCATE TABLE users RESTART IDENTITY CASCADE`;
     await prisma.$disconnect();
 });
 
@@ -14,24 +14,23 @@ const USER = {
 
 describe("POST /signup", ()=> {
     it("create user", async ()=> {
-        const response = await supertest(app).post("/signup").send(USER);
+        const response = await supertest(app).post("/sign-up").send(USER);
         expect(response.statusCode).toBe(201);
     });
     it("create a user with an email already in use", async ()=> {
-        const response = await supertest(app).post("/signup").send(USER);
+        const response = await supertest(app).post("/sign-up").send(USER);
         expect(response.statusCode).toBe(409);
     });
 });
 
 describe("POST /signin", ()=> {
     it("login with valid credentials", async ()=> {
-        const response = await supertest(app).post("/signin").send(USER)
+        const response = await supertest(app).post("/sign-in").send(USER)
         const token = response.body.token;
         expect(token).not.toBeNull();
     });
     it("login without valid credentials", async ()=> {
-        const response = await supertest(app).post("/signin").send({...USER, password: "0000000000"})
+        const response = await supertest(app).post("/sign-in").send({...USER, password: "0000000000"})
         expect(response.statusCode).toBe(400);
     });
 });
-
