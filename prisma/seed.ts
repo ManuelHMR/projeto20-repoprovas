@@ -1,31 +1,26 @@
-import { prisma } from "../src/config/database";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 async function main(){
-    await prisma.$executeRaw`
-        INSERT INTO terms ("number") VALUES (1);
-        INSERT INTO terms ("number") VALUES (2);
-        INSERT INTO terms ("number") VALUES (3);
-        INSERT INTO terms ("number") VALUES (4);
-        INSERT INTO terms ("number") VALUES (5);
-        INSERT INTO terms ("number") VALUES (6);
-        INSERT INTO categories ("name") VALUES ('Projeto');
-        INSERT INTO categories ("name") VALUES ('Prática');
-        INSERT INTO categories ("name") VALUES ('Recuperação');
-        INSERT INTO teachers ("name") VALUES ('Diego Pinho');
-        INSERT INTO teachers ("name") VALUES ('Bruna Hamori');
-        INSERT INTO disciplines ("name", "termId") VALUES ('HTML e CSS', 1);
-        INSERT INTO disciplines ("name", "termId") VALUES ('JavaScript', 2);
-        INSERT INTO disciplines ("name", "termId") VALUES ('React', 3);
-        INSERT INTO disciplines ("name", "termId") VALUES ('Humildade', 1);
-        INSERT INTO disciplines ("name", "termId") VALUES ('Planejamento', 2);
-        INSERT INTO disciplines ("name", "termId") VALUES ('Autoconfiança', 3);
-        INSERT INTO "teachersDisciplines" ("teacherId", "disciplineId") VALUES (1, 1);
-        INSERT INTO "teachersDisciplines" ("teacherId", "disciplineId") VALUES (1, 2);
-        INSERT INTO "teachersDisciplines" ("teacherId", "disciplineId") VALUES (1, 3); 
-        INSERT INTO "teachersDisciplines" ("teacherId", "disciplineId") VALUES (2, 4);
-        INSERT INTO "teachersDisciplines" ("teacherId", "disciplineId") VALUES (2, 5);
-        INSERT INTO "teachersDisciplines" ("teacherId", "disciplineId") VALUES (2, 6);
-    `
+    await prisma.term.createMany({data: [{number: 1},{number: 2},{number: 3},{number: 4},{number: 5},{number: 6}]});
+    await prisma.category.createMany({data: [{name: "Projeto"}, {name: "Prática"}, {name: "Recuperação"}]});
+    await prisma.teacher.createMany({data: [{name: 'Diego Pinho'}, {name: 'Bruna Hamori'}]});
+    await prisma.discipline.createMany({data: [
+        {name: 'HTML e CSS', termId: 1}, 
+        {name: 'JavaScript', termId: 2}, 
+        {name: 'React', termId: 3}, 
+        {name: 'Humildade', termId: 1}, 
+        {name: 'Planejamento', termId: 2},
+        {name: 'Autoconfiança', termId: 3}
+    ]});   
+    await prisma.teacherDiscipline.createMany({data:[
+        {teacherId: 1, disciplineId: 1},
+        {teacherId: 1, disciplineId: 2},
+        {teacherId: 1, disciplineId: 3},
+        {teacherId: 2, disciplineId: 4},
+        {teacherId: 2, disciplineId: 5},
+        {teacherId: 2, disciplineId: 6}
+    ]})
 };
 
 main().catch(e => {

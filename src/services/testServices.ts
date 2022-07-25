@@ -1,18 +1,19 @@
-import { findByName } from "../repositories/findByName";
+import { prisma } from "../config/database";
+import { findById } from "../repositories/findById";
 import { insertData } from "../repositories/insertData";
-import { findTeachersDiscipline, getTestsRepositories } from "../repositories/testRepositories";
+import { findTeachersDiscipline, getTestsByDiscipline, getTestsByTeacher } from "../repositories/testRepositories";
 
 
 export async function postTestService(body : testBody) {
-    const categoryId = await findByName(body.category, "category");
-    const teacherId = await findByName(body.teacher, "teacher");
-    const disciplineId = await findByName(body.discipline, "discipline");
-    const teacherDisciplineId = await findTeachersDiscipline(disciplineId, teacherId);
+    await findById(body.categoryId, "category");
+    await findById(body.teacherId, "teacher");
+    await findById(body.disciplineId, "discipline");
+    const teacherDisciplineId = await findTeachersDiscipline(body.disciplineId, body.teacherId);
     await insertData({
         name: body.name, 
         pdfUrl: body.pdfUrl,
         teacherDisciplineId,
-        categoryId
+        categoryId: body.categoryId
     });
 };
 
@@ -23,16 +24,20 @@ export async function getTestsService(groupBy: string) {
             message: "Wrong group!"
         }
     }
-    const result = await getTestsRepositories(groupBy);
-    return result;
+    if(groupBy === "disciplines"){
+        return await getTestsByDiscipline()
+    }
+    if(groupBy === "teachers"){
+        return await getTestsByTeacher()
+    }
 };
 
 
 export interface testBody {
     name: string
     pdfUrl: string
-    category: string
-    teacher: string
-    discipline: string
+    categoryId: number
+    teacherId: number
+    disciplineId: number
 };
     

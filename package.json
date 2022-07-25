@@ -7,7 +7,10 @@
     "start": "tsc && node build/server.js",
     "build": "tsc",
     "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
-    "test": "dotenv -e .env.test prisma db push && jest --passWithNoTests --noStackTrace --runInBand"
+    "test": "dotenv -e .env.test prisma db push && dotenv -e .env.test prisma db seed && dotenv -e .env.test jest --passWithNoTests --noStackTrace --runInBand"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "repository": {
     "type": "git",

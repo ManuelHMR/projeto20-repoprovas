@@ -16,14 +16,74 @@ export async function findTeachersDiscipline(disciplineId: number, teacherId: nu
     return result.id;
 };
 
-export async function getTestsRepositories(groupBy: string) {
-    return prisma.test.findMany({
+export async function getTestsByDiscipline() {
+    const tests = await prisma.term.findMany({
         include: {
-            teacherDiscipline: {
-                include:{
-                    [groupBy]: true
+            disciplines: {
+                include: {
+                    teachersDisciplines: {
+                        select: {
+                            teachers: true,
+                            tests: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    pdfUrl: true,
+                                    category:{
+                                        select:{
+                                            id: true,
+                                            name:true,                                           
+                                        }
+                                    }
+                                }
+                            },
+                        }
+                    }
                 }
             }
         }
-    })
-};
+    });
+    return { tests }
+}
+
+export async function getTestsByTeacher() {
+    const tests = await prisma.teacherDiscipline.findMany({
+        include:{
+            disciplines:{
+                include:{
+                    teachersDisciplines:{
+                        select:{
+                            id: true,
+                            teacherId: true,
+                            disciplineId: true,
+                            tests:{
+                                select:{
+                                    id: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            tests:{
+                include:{
+                    category:{
+                        select:{
+                            id: true,
+                            name: true
+                        }
+                    }
+                }
+            },
+            teachers:{
+                select:{
+                    id: true,
+                    name: true,
+                }
+            },
+        }
+    });
+
+    return { tests }
+}
