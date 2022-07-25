@@ -14,7 +14,7 @@ export async function findTeachersDiscipline(disciplineId: number, teacherId: nu
         }
     }
     return result.id;
-}
+};
 
 export async function getTestsRepositories(groupBy: string) {
     return prisma.test.findMany({
