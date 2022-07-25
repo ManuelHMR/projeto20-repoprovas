@@ -3,7 +3,7 @@ import { getTestsService, postTestService } from "../services/testServices";
 
 export async function postTestController(req: Request, res: Response) {
     await postTestService(req.body)
-    return res.send(201)
+    return res.sendStatus(201)
 };
 
 export async function getTestController(req: Request, res: Response) {
